@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>苷舍＿半熟乳酪塔團購</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFFFFF;
+    --warm-white: #FFFFFF;
+    --brown-dark: #3A2A1E;
+    --brown-mid: #7A5C42;
+    --brown-pale: #C4A882;
+    --caramel: #9B7355;
+    --sand: #E8DDD0;
+    --sand-light: #F5EFE6;
+    --green-accent: #7A9E7E;
+    --red-accent: #A84040;
+    --shadow: rgba(58,42,30,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #FBF3F3; font-family: 'Noto Sans TC', sans-serif; color: var(--brown-dark); min-height: 100vh; }
+
+  /* Header */
+  .header { background: linear-gradient(160deg, #fff 0%, #EDD1D2 100%); color: var(--brown-dark); padding: 32px 20px 28px; text-align: center; position: relative; overflow: hidden; border-bottom: 2px solid var(--sand); }
+  .header::before { content:''; position:absolute; top:-40px; left:-40px; width:160px; height:160px; border:1px solid rgba(155,115,85,0.15); border-radius:50%; }
+  .header::after  { content:''; position:absolute; bottom:-60px; right:-30px; width:200px; height:200px; border:1px solid rgba(155,115,85,0.1); border-radius:50%; }
+  .brand { font-family:'Noto Serif TC',serif; font-size:13px; letter-spacing:6px; color:var(--brown-mid); margin-bottom:8px; }
+  .title { font-family:'Noto Serif TC',serif; font-size:26px; font-weight:700; color:var(--brown-dark); letter-spacing:2px; margin-bottom:12px; }
+  .pickup-badges { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .badge { background:rgba(212,169,106,0.15); border:1px solid var(--brown-pale); color:var(--sand); padding:5px 14px; border-radius:20px; font-size:13px; }
+
+  .container { max-width:680px; margin:0 auto; padding:28px 16px 60px; }
+
+  /* Steps */
+  .steps-row { display:flex; margin-bottom:28px; background:linear-gradient(135deg,#fff 0%,#FDF0F0 100%); border-radius:12px; padding:16px 20px; border:1.5px solid var(--sand); box-shadow:0 2px 10px rgba(58,42,30,0.06); }
+  .step { flex:1; text-align:center; position:relative; padding:0 4px; }
+  .step:not(:last-child)::after { content:'→'; position:absolute; right:-6px; top:50%; transform:translateY(-50%); color:var(--brown-mid); font-size:14px; }
+  .step-num { width:26px; height:26px; background:var(--caramel); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin:0 auto 5px; }
+  .step-label { font-size:11px; color:var(--brown-dark); line-height:1.3; font-weight:500; }
+
+  /* Section */
+  .section { background:#fff; border-radius:14px; padding:22px 20px; margin-bottom:16px; box-shadow:0 2px 12px var(--shadow); border:1px solid var(--sand-light); }
+  .section-title { font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; color:var(--brown-mid); margin-bottom:16px; display:flex; align-items:center; gap:8px; letter-spacing:1px; }
+  .section-title::before { content:''; display:block; width:3px; height:16px; background:var(--caramel); border-radius:2px; flex-shrink:0; }
+
+  /* Notice */
+  .notice { background:var(--sand-light); border-left:3px solid var(--caramel); border-radius:0 8px 8px 0; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.9; }
+  .notice strong { color:var(--caramel); }
+  .notice .warn { color:var(--red-accent); font-weight:500; }
+
+  /* Product Card */
+  .product-card { border:1.5px solid var(--sand); border-radius:12px; margin-bottom:12px; overflow:hidden; background:#fff; transition:border-color 0.2s, box-shadow 0.2s; box-shadow:0 1px 6px rgba(58,42,30,0.05); }
+  .product-card.selected { border-color:var(--caramel); box-shadow:0 2px 10px rgba(196,121,59,0.15); }
+
+  /* Image */
+  .product-img-wrap { width:100%; overflow:hidden; background:var(--sand-light); }
+  .product-img-wrap img { width:100%; height:auto; display:block; }
+  .product-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+  .product-img-placeholder { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--brown-pale); border-bottom:1.5px dashed var(--sand); }
+  .product-img-placeholder .ph-icon { font-size:28px; opacity:0.5; }
+  .product-img-placeholder .ph-text { font-size:11px; letter-spacing:1px; opacity:0.6; }
+
+  .product-body { padding:14px 16px; }
+  .product-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+  .product-name { font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; color:var(--brown-dark); line-height:1.4; }
+  .product-price { font-size:17px; font-weight:700; color:var(--caramel); white-space:nowrap; margin-left:8px; }
+  .product-desc { font-size:12px; color:#888; margin-bottom:12px; line-height:1.6; display:flex; flex-wrap:wrap; gap:4px; }
+  .tag { display:inline-block; background:var(--sand-light); border-radius:4px; padding:2px 8px; color:var(--brown-mid); font-size:11px; }
+
+  /* Qty */
+  .qty-row { display:flex; align-items:center; gap:10px; }
+  .qty-label { font-size:13px; color:#777; }
+  .qty-ctrl { display:flex; align-items:center; border:1.5px solid var(--sand); border-radius:8px; overflow:hidden; }
+  .qty-btn { width:32px; height:32px; border:none; background:var(--sand-light); color:var(--brown-mid); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; user-select:none; }
+  .qty-btn:hover { background:var(--sand); }
+  .qty-input { width:38px; height:32px; border:none; border-left:1.5px solid var(--sand); border-right:1.5px solid var(--sand); text-align:center; font-size:14px; font-family:'Noto Sans TC',sans-serif; color:var(--brown-dark); background:#fff; -moz-appearance:textfield; }
+  .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+  .subtotal { margin-left:auto; font-size:13px; color:var(--brown-mid); }
+  .subtotal span { font-weight:700; color:var(--caramel); }
+
+  /* Packaging */
+  .pack-options { display:flex; gap:8px; flex-wrap:wrap; }
+  .pack-option { flex:1; min-width:100px; border:2px solid var(--sand); border-radius:10px; padding:10px 12px; cursor:pointer; transition:all 0.2s; background:#fff; text-align:center; }
+  .pack-option:hover { border-color:var(--brown-pale); }
+  .pack-option input { display:none; }
+  .pack-option.selected { border-color:var(--caramel); background:#FFF8F2; }
+  .pack-option-label { font-size:13px; font-weight:500; color:var(--brown-dark); display:block; margin-bottom:2px; }
+  .pack-option-note { font-size:11px; color:#999; line-height:1.4; }
+
+
+  /* Form */
+  .form-group { margin-bottom:14px; }
+  .form-label { display:block; font-size:13px; font-weight:500; color:var(--brown-mid); margin-bottom:6px; }
+  .form-label .req { color:var(--red-accent); margin-left:2px; }
+  .form-input { width:100%; padding:10px 14px; border:1.5px solid var(--sand); border-radius:8px; font-size:14px; font-family:'Noto Sans TC',sans-serif; color:var(--brown-dark); background:#fff; transition:border-color 0.2s, box-shadow 0.2s; }
+  .form-input:focus { outline:none; border-color:var(--caramel); box-shadow:0 0 0 3px rgba(155,115,85,0.15); }
+  .form-input.error { border-color:var(--red-accent) !important; box-shadow:0 0 0 3px rgba(168,64,64,0.15) !important; animation:shakeField 0.4s ease; }
+  .pickup-select.error { border-color:var(--red-accent) !important; box-shadow:0 0 0 3px rgba(168,64,64,0.15) !important; animation:shakeField 0.4s ease; }
+  .form-hint { font-size:11px; color:#999; margin-top:4px; }
+  .field-error-msg { font-size:11px; color:var(--red-accent); margin-top:4px; display:none; font-weight:500; }
+  .field-error-msg.show { display:block; }
+  @keyframes shakeField {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-6px)}
+    40%{transform:translateX(6px)}
+    60%{transform:translateX(-4px)}
+    80%{transform:translateX(4px)}
+  }
+  .pickup-select { width:100%; padding:14px 16px; border:2.5px solid var(--caramel); border-radius:10px; font-size:16px; font-weight:500; font-family:'Noto Sans TC',sans-serif; color:var(--brown-dark); background:#FDF6F6; cursor:pointer; box-shadow:0 2px 10px rgba(196,121,124,0.15); }
+  .pickup-select:focus { outline:none; border-color:var(--brown-mid); box-shadow:0 0 0 3px rgba(196,121,59,0.2); }
+  .pickup-select.unselected { animation:pickupPulse 1.8s infinite; }
+  @keyframes pickupPulse {
+    0%,100% { box-shadow:0 2px 10px rgba(196,121,124,0.2); }
+    50% { box-shadow:0 2px 18px rgba(196,121,124,0.5); border-color:var(--brown-mid); }
+  }
+  /* 未選日期時下方內容模糊鎖定 */
+  .content-locked { filter:blur(3px); pointer-events:none; user-select:none; opacity:0.5; transition:all 0.3s; }
+  .scroll-hint { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--red-accent); color:#fff; padding:12px 20px; border-radius:10px; font-size:13px; font-weight:500; z-index:1000; box-shadow:0 4px 12px rgba(184,64,64,0.4); white-space:nowrap; }
+  .scroll-hint.show { display:block; animation:fadeInUp 0.3s ease; }
+  @keyframes fadeInUp { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+  /* Total */
+  .total-box { background:linear-gradient(135deg,#FDF6F6 0%,#F7EAEA 100%); border-radius:16px; padding:22px 22px; margin-bottom:16px; border:2.5px solid var(--caramel); box-shadow:0 6px 24px rgba(155,115,85,0.14); position:relative; overflow:hidden; }
+  .total-box::before { content:'請確認訂單內容'; position:absolute; top:0; right:0; background:var(--caramel); color:#fff; font-size:11px; font-weight:700; letter-spacing:1px; padding:4px 12px; border-radius:0 14px 0 10px; }
+  .total-row { display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:7px 0; border-bottom:1px solid rgba(76,175,120,0.25); color:var(--brown-dark); }
+  .total-row.grand { font-size:22px; font-weight:700; color:var(--brown-dark); padding-top:14px; margin-top:8px; border-top:2px solid var(--caramel); border-bottom:none; }
+  .total-row.grand span:last-child { color:var(--caramel); font-size:26px; }
+  .total-qty-ctrl { display:flex; align-items:center; gap:0; border:1.5px solid var(--sand); border-radius:7px; overflow:hidden; margin:0 8px; }
+  .total-qty-btn { width:26px; height:26px; border:none; background:#fff; color:var(--brown-mid); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+  .total-qty-btn:hover { background:var(--sand); }
+  .total-qty-num { width:28px; height:26px; text-align:center; font-size:13px; font-weight:700; color:var(--brown-dark); line-height:26px; border-left:1.5px solid var(--sand); border-right:1.5px solid var(--sand); background:#fff; }
+  .total-updated { display:none; font-size:11px; color:var(--caramel); font-weight:600; margin-left:6px; }
+  .total-updated.show { display:inline; animation:fadeIn 0.2s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes popIn { 0%{opacity:0;transform:scale(0.7)} 100%{opacity:1;transform:scale(1)} }
+  .total-box.flash { animation:flashGreen 0.4s ease; }
+  @keyframes flashGreen { 0%{background:#FDF6F6} 50%{background:#EDD1D2} 100%{background:#FDF6F6} }
+  .total-label { font-family:'Noto Serif TC',serif; font-size:14px; font-weight:700; color:var(--brown-mid); margin-bottom:12px; letter-spacing:1px; display:flex; align-items:center; gap:6px; }
+  .total-label::before { content:''; display:block; width:3px; height:16px; background:var(--caramel); border-radius:2px; }
+
+  /* Policy */
+  .policy-toggle { width:100%; background:none; border:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:0; font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; color:var(--brown-mid); letter-spacing:1px; }
+  .policy-toggle .arrow { font-size:12px; transition:transform 0.2s; color:var(--brown-pale); }
+  .policy-toggle.open .arrow { transform:rotate(180deg); }
+  .policy-body { display:block; margin-top:12px; font-size:12px; line-height:2; color:#666; }
+  .policy-body.open { display:block; } /* always open by default */
+  .policy-body li { margin-left:16px; margin-bottom:4px; }
+
+  /* Alert & Submit */
+  .alert { background:#FFF3F3; border:1px solid #F5C0C0; border-radius:8px; padding:10px 14px; font-size:12px; color:var(--red-accent); margin-bottom:12px; display:none; }
+  .alert.show { display:block; }
+  .submit-btn { width:100%; padding:16px; background:var(--caramel); color:#fff; border:none; border-radius:12px; font-family:'Noto Serif TC',serif; font-size:17px; font-weight:700; letter-spacing:2px; cursor:pointer; transition:background 0.2s, transform 0.1s; box-shadow:0 4px 14px rgba(196,121,59,0.35); }
+  .submit-btn:hover { background:var(--brown-mid); transform:translateY(-1px); }
+
+  /* Success Screen */
+  .success-screen { display:none; background:var(--warm-white); border-radius:14px; padding:36px 24px; margin-top:0; box-shadow:0 2px 12px var(--shadow); text-align:center; }
+  .success-screen.show { display:block; }
+  .success-icon { font-size:48px; margin-bottom:14px; }
+  .success-title { font-family:'Noto Serif TC',serif; font-size:20px; font-weight:700; color:var(--brown-dark); margin-bottom:16px; }
+  .success-steps { text-align:left; background:var(--sand-light); border-radius:10px; padding:16px 18px; margin-bottom:16px; }
+  .success-step { display:flex; gap:12px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(212,169,106,0.3); font-size:13px; line-height:1.7; }
+  .success-step:last-child { border-bottom:none; }
+  .success-step-num { width:22px; height:22px; background:var(--caramel); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+  .success-step strong { color:var(--caramel); }
+  .success-links { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .success-link-btn { flex:1; min-width:130px; padding:16px; border-radius:12px; border:none; background:var(--caramel); color:#fff; font-family:'Noto Serif TC',serif; font-size:16px; font-weight:700; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(196,121,59,0.4); animation:pulse 1.5s infinite; }
+  .success-link-btn:hover { background:var(--brown-mid); transform:translateY(-2px); }
+  @keyframes pulse {
+    0%,100% { box-shadow:0 4px 14px rgba(196,121,59,0.4); }
+    50% { box-shadow:0 4px 24px rgba(196,121,59,0.75); transform:translateY(-2px); }
+  }
+  /* 自訂彈窗 */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.show { display:flex; }
+  .modal-box { background:#fff; border-radius:16px; padding:28px 24px; max-width:360px; width:100%; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.2); animation:modalIn 0.3s ease; }
+  @keyframes modalIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-icon { font-size:40px; margin-bottom:10px; }
+  .modal-title { font-family:'Noto Serif TC',serif; font-size:18px; font-weight:700; color:var(--brown-dark); margin-bottom:8px; }
+  .modal-warn { background:#FFF0F0; border:1px solid #F5C0C0; border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red-accent); font-weight:500; margin-bottom:16px; line-height:1.7; }
+  .modal-links { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .modal-link-btn { padding:14px; border-radius:10px; border:none; background:var(--caramel); color:#fff; font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 3px 10px rgba(196,121,59,0.35); transition:all 0.2s; }
+  .modal-link-btn:hover { background:var(--brown-mid); }
+  .modal-close { font-size:12px; color:#aaa; cursor:pointer; text-decoration:underline; }
+
+
+  /* Checkbox confirm */
+  .confirm-check-wrap {
+    background: #FFF8F0;
+    border: 2px solid var(--caramel);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .confirm-check-wrap input[type=checkbox] { display:none; }
+  .confirm-check-box {
+    width: 22px; height: 22px;
+    border: 2px solid var(--caramel);
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+    transition: background 0.15s;
+    background: #fff;
+  }
+  .confirm-check-wrap.checked .confirm-check-box {
+    background: var(--caramel);
+  }
+  .confirm-check-wrap.checked .confirm-check-box::after {
+    content: '✓';
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .confirm-check-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--brown-dark);
+  }
+  .confirm-check-text strong { color: var(--caramel); }
+
+  @media(max-width:600px){
+    .title { font-size:21px; }
+    .steps-row { padding:14px 10px; }
+    .step-label { font-size:10px; }
+    /* 商品卡片在手機上更緊湊 */
+    .product-body { padding:12px 14px; }
+    .product-name { font-size:14px; }
+    .product-price { font-size:15px; }
+    /* 包裝選項手機直排 */
+    .pack-options { flex-direction: column; }
+    .pack-option { min-width: unset; }
+    /* 確認框文字不要太小 */
+    .confirm-check-text { font-size:12px; }
+    /* 送出按鈕更大更好按 */
+    .submit-btn { font-size:16px; padding:18px; }
+    /* 成功畫面按鈕直排 */
+    .success-links { flex-direction: column; }
+    /* input 字體防止 iOS 自動放大 */
+    .form-input, .pickup-select { font-size:16px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init("0clBK18T7Vh3GcGtd");</script>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">苷 舍</div>
+  <div class="title">半熟乳酪塔 自取表單</div>
+
+</div>
+
+<div class="container">
+
+  <div class="steps-row">
+    <div class="step"><div class="step-num">1</div><div class="step-label">填寫<br>表單</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-label">送出後<br>私訊姓名</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">24小時內<br>完成匯款</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-label">準時前往<br>自取</div></div>
+  </div>
+
+  <div id="formArea">
+
+
+
+    <!-- 自取資訊 -->
+    <div class="section">
+      <div class="section-title">自取資訊</div>
+      <div class="notice">
+        📍 <strong>地址：</strong>高雄市三民區九如一路230巷18號1樓<br>
+        🕐 <strong>自取時段：</strong>週四五 17:30–18:00 ／ 週六日 15:30–16:00<br>
+        <span class="warn">⚠ 不提早開放，也不延後關閉，請準時前往</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">選擇自取日期<span class="req">*</span></label>
+        <select class="pickup-select unselected" id="pickupDate" onchange="onDateSelect(this); applySoldOut(this.value);">
+          <option value="">── 請選擇 ──</option>
+          <option value="4月17日（五）17:30–18:00">4月17日（五）17:30–18:00</option>
+          <option value="4月18日（六）15:30–16:00">4月18日（六）15:30–16:00</option>
+          <option value="4月24日（五）17:30–18:00">4月24日（五）17:30–18:00</option>
+          <option value="4月25日（六）15:30–16:00">4月25日（六）15:30–16:00</option>
+          <option value="5月1日（五）17:30–18:00">5月1日（五）17:30–18:00</option>
+          <option value="5月2日（六）15:30–16:00">5月2日（六）15:30–16:00</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 品項資訊區（折疊） -->
+    <div class="section" style="padding:0;overflow:hidden;">
+      <button onclick="toggleInfo()" style="width:100%;background:none;border:none;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'Noto Serif TC',serif;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:16px;">📋</span>
+          <span style="font-size:14px;font-weight:700;color:var(--brown-dark);letter-spacing:1px;">成分 · 過敏原 · 保存方式</span>
+          <span style="font-size:10px;background:var(--caramel);color:#fff;padding:2px 8px;border-radius:10px;">🍶 含酒精</span>
+        </div>
+        <span id="infoArrow" style="color:var(--brown-pale);font-size:12px;transition:transform 0.2s;">▼</span>
+      </button>
+      <div id="infoBody" style="display:none;border-top:1px solid var(--sand-light);padding:16px 20px;">
+        <div style="background:#3A2A1E;color:#fff;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;line-height:1.8;">
+          🍶 <strong>本店半熟乳酪塔、可麗露、蘭姆葡萄餅乾均含蘭姆酒</strong><br>
+          <span style="color:rgba(255,255,255,0.75);">未成年、孕婦及對酒精過敏者請勿購買</span>
+        </div>
+        <div style="font-size:12px;line-height:2;color:var(--brown-dark);">
+          <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--sand-light);">
+            <strong>🥧 半熟乳酪塔</strong>｜蛋奶素<br>
+            <span style="color:var(--brown-mid);">奶油乳酪／馬斯卡彭／切達乳酪／牛奶／糖／麵粉／雞蛋／杏仁粉／蘭姆酒</span><br>
+            <span style="color:var(--red-accent);">過敏原：蛋・奶・堅果・酒・麩質</span>
+          </div>
+          <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--sand-light);">
+            <strong>🍫 原味可麗露</strong>｜蛋奶素<br>
+            <span style="color:var(--brown-mid);">牛奶／糖／麵粉／奶油／蘭姆酒／香草籽</span><br>
+            <span style="color:var(--red-accent);">過敏原：蛋・奶・堅果・酒</span>
+          </div>
+          <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--sand-light);">
+            <strong>🍪 蘭姆葡萄餅乾</strong>｜蛋奶素<br>
+            <span style="color:var(--brown-mid);">奶油／奶油乳酪／糖／雞蛋／麵粉／杏仁粉／葡萄乾／蘭姆酒</span><br>
+            <span style="color:var(--red-accent);">過敏原：蛋・奶・堅果・酒・麩質</span>
+          </div>
+          <div style="margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--sand-light);">
+            <strong>🎂 巴斯克乳酪蛋糕</strong>｜蛋奶素<br>
+            <span style="color:var(--brown-mid);">奶油乳酪／鮮奶油／雞蛋／糖／麵粉</span><br>
+            <span style="color:var(--red-accent);">過敏原：蛋・奶・麩質</span>
+          </div>
+          <div style="background:var(--sand-light);border-radius:8px;padding:10px 14px;font-size:12px;line-height:2;">
+            🧊 <strong>保存方式</strong><br>
+            半熟乳酪塔｜冷凍 7 天，務必密封冷凍<br>
+            可麗露｜冷凍 5 天，食用前回溫 10 分鐘<br>
+            蘭姆葡萄餅乾｜冷凍 7 天，食用前回溫 10 分鐘<br>
+            巴斯克乳酪蛋糕｜冷凍 5 天／冷藏 3 天<br>
+            <span style="color:var(--caramel);font-weight:500;">請攜帶保冷袋＋保冷劑前往自取 🎒</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" id="scrollHint">📅 請先選擇自取日期才能繼續</div>
+
+    <div class="content-locked" id="lockedContent" onclick="showHint()">
+    <!-- 商品 -->
+    <div class="section">
+      <div class="section-title">選擇商品</div>
+
+      <!-- 大綜合 -->
+      <div class="product-card" id="card-combo">
+        <div class="product-img-wrap">
+          <img src="https://gangshr.github.io/2026cheesetart/1.jpg" alt="大綜合組" style="width:100%;height:auto;display:block;">
+        </div>
+        <div class="product-body">
+          <div class="product-header">
+            <div class="product-name">大綜合組</div>
+            <div class="product-price">$1,050</div>
+          </div>
+          <div class="product-desc">
+            <span class="tag">半熟乳酪塔 ×4</span><span class="tag">可麗露 ×4</span><span class="tag">蘭姆葡萄餅乾 ×4</span>
+          </div>
+          <div class="qty-row">
+            <span class="qty-label">數量</span>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('combo',-1)">−</button>
+              <input class="qty-input" type="number" id="qty-combo" value="0" min="0" max="10" oninput="updateAll('combo',1050)">
+              <button class="qty-btn" onclick="changeQty('combo',1)">+</button>
+            </div>
+            <span class="subtotal">小計：<span id="sub-combo">$0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8入半熟乳酪塔 -->
+      <div class="product-card" id="card-tart">
+        <div class="product-img-wrap">
+          <img src="https://gangshr.github.io/2026cheesetart/2.jpg" alt="8入半熟乳酪塔" style="width:100%;height:auto;display:block;">
+        </div>
+        <div class="product-body">
+          <div class="product-header">
+            <div class="product-name">8入半熟乳酪塔</div>
+            <div class="product-price">$750</div>
+          </div>
+          <div class="product-desc">
+            <span class="tag">半熟乳酪塔 ×8</span>
+          </div>
+          <div class="qty-row">
+            <span class="qty-label">數量</span>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('tart',-1)">−</button>
+              <input class="qty-input" type="number" id="qty-tart" value="0" min="0" max="10" oninput="updateAll('tart',750)">
+              <button class="qty-btn" onclick="changeQty('tart',1)">+</button>
+            </div>
+            <span class="subtotal">小計：<span id="sub-tart">$0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 可麗露 -->
+      <div class="product-card" id="card-canele">
+        <div class="product-img-wrap">
+          <img src="https://gangshr.github.io/2026cheesetart/3.jpg" alt="原味可麗露" style="width:100%;height:auto;display:block;">
+        </div>
+        <div class="product-body">
+          <div class="product-header">
+            <div class="product-name">原味可麗露（6入）</div>
+            <div class="product-price">$500</div>
+          </div>
+          <div class="product-desc">
+            <span class="tag">可麗露 ×6</span><span class="tag">每人限購4盒</span><span class="tag">出貨當日現烤</span>
+          </div>
+          <div class="qty-row">
+            <span class="qty-label">數量</span>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('canele',-1)">−</button>
+              <input class="qty-input" type="number" id="qty-canele" value="0" min="0" max="4" readonly style="cursor:not-allowed;background:#f9f9f9;">
+              <button class="qty-btn" onclick="changeQty('canele',1)">+</button>
+            </div>
+            <span class="subtotal">小計：<span id="sub-canele">$0</span></span>
+          </div>
+          <!-- 包裝選項（選了可麗露才顯示） -->
+          <div id="packSection" style="display:none; margin-top:14px; padding-top:14px; border-top:1.5px dashed var(--sand);">
+            <div style="font-size:13px; font-weight:500; color:var(--brown-mid); margin-bottom:8px;">📦 可麗露包裝方式</div>
+            <div class="pack-options">
+              <label class="pack-option" id="pack-allbag" onclick="selectPack('allbag')">
+                <input type="radio" name="pack" value="allbag">
+                <span class="pack-option-label">🛍 全部裝一袋</span>
+                <span class="pack-option-note">所有可麗露放一個大紙袋</span>
+              </label>
+              <label class="pack-option" id="pack-indbag" onclick="selectPack('indbag')">
+                <input type="radio" name="pack" value="indbag">
+                <span class="pack-option-label">🛍 個別袋裝</span>
+                <span class="pack-option-note">每組6入個別紙袋裝</span>
+              </label>
+              <label class="pack-option" id="pack-indbox" onclick="selectPack('indbox')">
+                <input type="radio" name="pack" value="indbox">
+                <span class="pack-option-label">📦 個別盒裝</span>
+                <span class="pack-option-note">每組6入個別紙盒裝</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 蘭姆葡萄 -->
+      <div class="product-card" id="card-rum">
+        <div class="product-img-wrap">
+          <img src="https://gangshr.github.io/2026cheesetart/4.jpg" alt="蘭姆葡萄餅乾" style="width:100%;height:auto;display:block;">
+        </div>
+        <div class="product-body">
+          <div class="product-header">
+            <div class="product-name">8入蘭姆葡萄餅乾</div>
+            <div class="product-price">$640</div>
+          </div>
+          <div class="product-desc">
+            <span class="tag">蘭姆葡萄餅乾 ×8</span>
+          </div>
+          <div class="qty-row">
+            <span class="qty-label">數量</span>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('rum',-1)">−</button>
+              <input class="qty-input" type="number" id="qty-rum" value="0" min="0" max="10" oninput="updateAll('rum',640)">
+              <button class="qty-btn" onclick="changeQty('rum',1)">+</button>
+            </div>
+            <span class="subtotal">小計：<span id="sub-rum">$0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 巴斯克 -->
+      <div class="product-card" id="card-basque">
+        <div class="product-img-wrap">
+          <img src="https://gangshr.github.io/2026cheesetart/5.jpg" alt="6吋巴斯克乳酪蛋糕" style="width:100%;height:auto;display:block;">
+        </div>
+        <div class="product-body">
+          <div class="product-header">
+            <div class="product-name">6吋巴斯克乳酪蛋糕</div>
+            <div class="product-price">$690</div>
+          </div>
+          <div class="product-desc">
+            
+          </div>
+          <div class="qty-row">
+            <span class="qty-label">數量</span>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('basque',-1)">−</button>
+              <input class="qty-input" type="number" id="qty-basque" value="0" min="0" max="10" oninput="updateAll('basque',690)">
+              <button class="qty-btn" onclick="changeQty('basque',1)">+</button>
+            </div>
+            <span class="subtotal">小計：<span id="sub-basque">$0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 總金額 -->
+    <div class="total-box" style="position:relative;">
+      <div id="totalUpdatedMsg" style="display:none;position:absolute;inset:0;background:rgba(196,121,124,0.92);border-radius:14px;z-index:10;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+        <div style="font-family:'Noto Serif TC',serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:4px;animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);">訂單已更新</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:2px;">請確認內容正確</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="total-label" style="margin-bottom:0;">🧾 訂單明細</div>
+
+      </div>
+      <div id="totalRows">
+        <div class="total-row"><span style="color:var(--brown-pale);font-size:12px;">尚未選擇商品</span><span></span></div>
+      </div>
+      <div class="total-row grand"><span>合計</span><span id="grandTotal">$0</span></div>
+    </div>
+
+    <!-- 訂購人資訊 -->
+    <div class="section">
+      <div class="section-title">訂購人資訊</div>
+      <div class="form-group">
+        <label class="form-label">電子郵件<span class="req">*</span></label>
+        <input class="form-input" id="email" type="email" placeholder="your@email.com" oninput="clearError('email')">
+        <div class="field-error-msg" id="err-email">請填寫電子郵件</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Facebook 或 LINE 暱稱<span class="req">*</span></label>
+        <input class="form-input" id="nickname" type="text" placeholder="填寫您使用的平台暱稱" oninput="clearError('nickname')">
+        <div class="field-error-msg" id="err-nickname">請填寫 FB 或 LINE 暱稱</div>
+        <div class="form-hint">FB聯絡 → 填FB暱稱｜LINE官方聯絡 → 填LINE暱稱</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">訂購人中文姓名<span class="req">*</span></label>
+        <input class="form-input" id="name" type="text" placeholder="取貨核對訂單使用" oninput="clearError('name')">
+        <div class="field-error-msg" id="err-name">請填寫中文姓名</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">聯絡電話<span class="req">*</span></label>
+        <input class="form-input" id="phone" type="tel" placeholder="09xx-xxxxxx" oninput="clearError('phone')">
+        <div class="field-error-msg" id="err-phone">請填寫聯絡電話</div>
+      </div>
+    </div>
+
+    <!-- 退貨政策 -->
+    <div class="section">
+      <button class="policy-toggle open" id="policyBtn" onclick="togglePolicy()">
+        退貨退款政策 <span class="arrow">▼</span>
+      </button>
+      <div class="policy-body" id="policyBody">
+        <ul>
+          <li>颱風停班停課依政府公告，自取日將順延至隔日；如無法配合可扣除原物料成本（全額50%）後退款</li>
+          <li><strong style="font-size:13px;color:var(--brown-dark);">不受理更改自取日期、時間、尺寸、口味</strong></li>
+          <li>訂單成立後取消，扣除$100處理費及訂單總額50%後退還剩餘款項（需提前6天告知，逾期不退款）</li>
+          <li><strong style="font-size:13px;color:var(--brown-dark);">生鮮食品不適用消費者保護法第十九條，不享有七天鑑賞期</strong></li>
+          <li>與期待不符、不合口味、無依照保存方式保存、折封後未立即食用完畢等情事，不予退款</li>
+          <li>產品有狀況請於<strong>收到當日反應</strong>，逾期不受理</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 必勾確認框 -->
+    <div class="confirm-check-wrap" id="confirmCheck" onclick="toggleConfirm()">
+      <div class="confirm-check-box"></div>
+      <div class="confirm-check-text">
+        我已閱讀並同意上述退貨退款政策，且確認所有訂購資訊正確無誤。<br>
+        <strong>送出表單後，我會立刻在 60 分鐘內私訊苷舍告知訂購人中文姓名。</strong>
+      </div>
+    </div>
+    <div id="alertBox" class="alert" id="alertBox">請確認：①至少選擇一項商品 ②所有必填欄位已填寫 ③可麗露包裝方式已選擇（混搭請確認數量正確）④已勾選同意聲明。</div>
+    <button class="submit-btn" onclick="submitForm()">確認送出訂單 →</button>
+
+  </div><!-- /formArea -->
+
+  <!-- ✅ 成功畫面（送出後才出現，包含私訊指引） -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">訂單已送出！接下來請這樣做：</div>
+    <div class="success-steps">
+      <div class="success-step">
+        <div class="success-step-num">1</div>
+        <div>
+          <strong>現在立刻</strong>透過下方按鈕私訊我們，告知「<strong>訂購人中文姓名</strong>」<br>
+          <span style="color:var(--red-accent);font-size:12px;">⚠ 60分鐘內未私訊，訂單自動取消不保留</span>
+        </div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-num">2</div>
+        <div>收到回覆後，我們會提供<strong>匯款帳號與期限</strong></div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-num">3</div>
+        <div>
+          <strong>24小時內完成匯款</strong>，訂單正式成立<br>
+          <span style="color:#999;font-size:12px;">逾期未匯款視為棄單</span>
+        </div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-num">4</div>
+        <div>攜帶保冷袋＋保冷劑，<strong>準時</strong>前往自取 🧊</div>
+      </div>
+    </div>
+    <div class="success-links">
+      <a class="success-link-btn" href="https://m.me/cheeseing2014" target="_blank">💬 FB 私訊我們</a>
+      <a class="success-link-btn" href="https://lin.ee/9Z6dbCZ" target="_blank">📱 LINE 官方私訊</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ========================================================
+// 🔢 商家控制區：指定「日期 + 品項」的最大購買數量
+// 格式：'日期': { '品項id': 最大數量 }
+// 品項 id：combo / tart / canele / rum / basque
+// 不在這裡設定的品項，維持預設上限（可麗露4，其他10）
+// 範例：4/18 可麗露只剩1盒：
+//   '4月18日（五）17:30–18:00': { canele: 1 },
+// ========================================================
+const dateMaxQty = {
+  '4月18日（六）15:30–16:00': { combo: 2 },   // 範例
+  '4月25日（六）15:30–16:00': { combo: 2 },   // 範例
+
+};
+// ========================================================
+
+// ========================================================
+// 🛒 商家控制區：指定「日期 + 品項」售完
+// 格式：'日期value': ['品項id', '品項id']
+// 日期 value 請對應上方 <option value="..."> 的內容
+// 品項 id：combo / tart / canele / rum / basque
+// 例如 5/1 可麗露售完：
+//   '5月1日（四）17:30–18:00': ['canele'],
+// 多個品項售完：
+//   '4月16日（三）17:30–18:00': ['canele', 'rum'],
+// ========================================================
+         // <option value="4月16日（四）17:30–18:00">4月16日（四）17:30–18:00</option>
+         // <option value="4月17日（五）17:30–18:00">4月17日（五）17:30–18:00</option>
+         // <option value="4月18日（六）15:30–16:00">4月18日（六）15:30–16:00</option>
+         //<option value="4月26日（日）15:30–16:00">4月26日（日）15:30–16:00</option>
+
+const dateSoldOut = {
+   '4月18日（六）15:30–16:00': ['canele'],  // 範例，取消 // 即生效
+   '4月16日（四）17:30–18:00': ['canele'],
+   '4月25日（六）15:30–16:00': ['canele'],
+};
+// ========================================================
+
+const prices = {combo:1050, tart:750, canele:500, rum:640, basque:690};
+const names  = {combo:'大綜合組', tart:'8入半熟乳酪塔', canele:'原味可麗露(6入)', rum:'8入蘭姆葡萄餅乾', basque:'6吋巴斯克乳酪蛋糕'};
+
+function getQty(id){ return parseInt(document.getElementById('qty-'+id).value)||0; }
+
+function changeQty(id, delta){
+  const input = document.getElementById('qty-'+id);
+  const max = parseInt(input.max)||99;
+  let val = (parseInt(input.value)||0)+delta;
+  val = Math.max(0, Math.min(max, val));
+  input.value = val;
+  updateAll(id, prices[id]);
+}
+
+function updateAll(id, price){
+  const qty = getQty(id);
+  document.getElementById('sub-'+id).textContent = '$'+(qty*price).toLocaleString();
+  document.getElementById('card-'+id).classList.toggle('selected', qty>0);
+  updateTotal();
+  checkPackSection();
+}
+
+function updateTotal(){
+  let total=0, rows=[];
+  for(const [id,price] of Object.entries(prices)){
+    const qty=getQty(id);
+    if(qty>0){
+      total+=qty*price;
+      let extra = '';
+      if(id==='canele'){
+        const sel = document.querySelector('.pack-option.selected');
+        const packLabel = sel ? sel.querySelector('.pack-option-label').textContent.trim() : '⚠ 尚未選擇包裝';
+        extra = `<span style="font-size:11px;color:var(--brown-mid);margin-left:6px;">${packLabel}</span>`;
+      }
+      const maxQty = id==='canele' ? 4 : 10;
+      rows.push(`
+        <div class="total-row">
+          <span style="flex:1">${names[id]}${extra}</span>
+          <div style="display:flex;align-items:center;">
+            <div class="total-qty-ctrl">
+              <button class="total-qty-btn" onclick="totalChangeQty('${id}',-1)">−</button>
+              <div class="total-qty-num" id="tqty-${id}">${qty}</div>
+              <button class="total-qty-btn" onclick="totalChangeQty('${id}',1)">+</button>
+            </div>
+            <span style="font-size:13px;color:var(--brown-dark);min-width:60px;text-align:right;">$${(qty*price).toLocaleString()}</span>
+          </div>
+        </div>`);
+    }
+  }
+  document.getElementById('totalRows').innerHTML = rows.length
+    ? rows.join('')
+    : '<div class="total-row"><span style="color:var(--caramel);font-size:12px;">尚未選擇商品</span><span></span></div>';
+  document.getElementById('grandTotal').textContent = '$'+total.toLocaleString();
+}
+
+let updateMsgTimer;
+function totalChangeQty(id, delta){
+  const input = document.getElementById('qty-'+id);
+  const max = parseInt(input.max)||10;
+  let val = (parseInt(input.value)||0)+delta;
+  val = Math.max(0, Math.min(max, val));
+  input.value = val;
+  updateAll(id, prices[id]);
+
+  // 閃爍提示
+  const box = document.querySelector('.total-box');
+  box.classList.remove('flash');
+  void box.offsetWidth;
+  box.classList.add('flash');
+  setTimeout(()=>box.classList.remove('flash'), 400);
+
+  // 顯示「已更新 ✓」提示
+  const msg = document.getElementById('totalUpdatedMsg');
+  msg.style.display = 'flex';
+  clearTimeout(updateMsgTimer);
+  updateMsgTimer = setTimeout(()=>{ msg.style.display='none'; }, 1800);
+}
+
+function checkPackSection(){
+  const show = getQty('canele')>0;
+  const section = document.getElementById('packSection');
+  const wasHidden = section.style.display === 'none' || section.style.display === '';
+  section.style.display = show ? 'block' : 'none';
+  // 剛出現時自動滾過去
+  if(show && wasHidden){
+    setTimeout(()=>{
+      section.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 150);
+  }
+  // 取消選購時清空包裝選擇
+  if(!show){
+    ['allbag','indbag','indbox'].forEach(t=>{
+      const el = document.getElementById('pack-'+t);
+      if(el) el.classList.remove('selected');
+    });
+  }
+}
+
+function selectPack(t){
+  ['allbag','indbag','indbox'].forEach(x=>document.getElementById('pack-'+x).classList.remove('selected'));
+  document.getElementById('pack-'+t).classList.add('selected');
+  updateTotal();
+}
+
+function togglePolicy(){
+  document.getElementById('policyBtn').classList.toggle('open');
+  document.getElementById('policyBody').classList.toggle('open');
+}
+
+function toggleConfirm(){
+  const el = document.getElementById('confirmCheck');
+  el.classList.toggle('checked');
+}
+
+// 套用售完狀態（依目前選擇的日期）
+function applySoldOut(selectedDate){
+  // 先清除所有售完狀態
+  ['combo','tart','canele','rum','basque'].forEach(id => {
+    const card = document.getElementById('card-'+id);
+    if(!card) return;
+    card.style.opacity = '';
+    card.style.pointerEvents = '';
+    const overlay = card.querySelector('.soldout-overlay');
+    if(overlay) overlay.remove();
+    const input = document.getElementById('qty-'+id);
+    input.disabled = false;
+  });
+
+  // 套用新的售完狀態
+  const soldItems = dateSoldOut[selectedDate] || [];
+  soldItems.forEach(id => {
+    const card = document.getElementById('card-'+id);
+    const input = document.getElementById('qty-'+id);
+    if(!card) return;
+    input.value = 0;
+    input.disabled = true;
+    updateAll(id, prices[id]);
+    const overlay = document.createElement('div');
+    overlay.className = 'soldout-overlay';
+    overlay.style.cssText = 'position:absolute;inset:0;background:rgba(255,255,255,0.82);display:flex;align-items:center;justify-content:center;z-index:5;border-radius:12px;';
+    overlay.innerHTML = '<span style="font-family:Noto Serif TC,serif;font-size:16px;font-weight:700;color:#A84040;letter-spacing:3px;background:#fff;padding:6px 18px;border-radius:20px;border:2px solid #A84040;">本日售完</span>';
+    card.style.position = 'relative';
+    card.style.opacity = '0.65';
+    card.style.pointerEvents = 'none';
+    card.appendChild(overlay);
+  });
+
+  // 套用每日每品項數量上限
+  const defaultMax = { combo:10, tart:10, canele:4, rum:10, basque:10 };
+  const dayMax = dateMaxQty[selectedDate] || {};
+  ['combo','tart','canele','rum','basque'].forEach(id => {
+    const input = document.getElementById('qty-'+id);
+    if(!input) return;
+    // 已售完的不處理
+    if(soldItems.includes(id)) return;
+    // 套用當日上限（優先）或預設上限
+    const max = (dayMax[id] !== undefined) ? dayMax[id] : defaultMax[id];
+    input.max = max;
+    // 若目前數量超過新上限，重設
+    if(parseInt(input.value) > max) {
+      input.value = max;
+      updateAll(id, prices[id]);
+    }
+    // 顯示剩餘數量提示
+    const card = document.getElementById('card-'+id);
+    const oldHint = card.querySelector('.stock-hint');
+    if(oldHint) oldHint.remove();
+    if(dayMax[id] !== undefined && dayMax[id] > 0){
+      const hint = document.createElement('div');
+      hint.className = 'stock-hint';
+      hint.style.cssText = 'font-size:11px;color:#A84040;font-weight:600;margin-top:6px;letter-spacing:1px;';
+      hint.textContent = `⚠ 本日限量 ${max} 盒`;
+      card.querySelector('.qty-row').after(hint);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', () => applySoldOut(''));
+
+function toggleInfo(){
+  const body = document.getElementById('infoBody');
+  const arrow = document.getElementById('infoArrow');
+  if(body.style.display === 'none'){
+    body.style.display = 'block';
+    arrow.style.transform = 'rotate(180deg)';
+  } else {
+    body.style.display = 'none';
+    arrow.style.transform = '';
+  }
+}
+
+function showError(fieldId){
+  const el = document.getElementById(fieldId);
+  if(!el) return;
+  el.classList.add('error');
+  const msg = document.getElementById('err-'+fieldId);
+  if(msg) msg.classList.add('show');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>el.focus(), 400);
+}
+
+function clearError(fieldId){
+  const el = document.getElementById(fieldId);
+  if(el) el.classList.remove('error');
+  const msg = document.getElementById('err-'+fieldId);
+  if(msg) msg.classList.remove('show');
+}
+
+function submitForm(){
+  const alertEl = document.getElementById('alertBox');
+  const confirmed = document.getElementById('confirmCheck').classList.contains('checked');
+  // 可麗露包裝驗證
+  const caneleQty = getQty('canele');
+  const needsPack = caneleQty > 0;
+  const packSelected = document.querySelector('.pack-option.selected');
+  if(needsPack && !packSelected){
+    document.getElementById('packSection').scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('packSection').style.outline = '2.5px solid var(--red-accent)';
+    document.getElementById('packSection').style.borderRadius = '12px';
+    setTimeout(()=>{ document.getElementById('packSection').style.outline=''; }, 2000);
+    return;
+  }
+
+  if(!document.getElementById('email').value.trim()){ showError('email','err-email'); return; }
+  if(!document.getElementById('nickname').value.trim()){ showError('nickname','err-nickname'); return; }
+  if(!document.getElementById('name').value.trim()){ showError('name','err-name'); return; }
+  if(!document.getElementById('phone').value.trim()){ showError('phone','err-phone'); return; }
+
+  if(!document.getElementById('confirmCheck').classList.contains('checked')){
+    document.getElementById('confirmCheck').scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('confirmCheck').style.outline = '2.5px solid var(--red-accent)';
+    setTimeout(()=>{ document.getElementById('confirmCheck').style.outline=''; }, 2000);
+    return;
+  }
+
+  // 收集包裝方式
+  const packEl = document.querySelector('.pack-option.selected');
+  const packLabel = packEl ? packEl.querySelector('.pack-option-label').textContent.trim() : '';
+
+  // 計算合計
+  let totalAmt = 0;
+  for(const [id, price] of Object.entries(prices)) totalAmt += getQty(id) * price;
+
+  // 送資料到 Google 試算表
+  const payload = {
+    pickupDate: document.getElementById('pickupDate').value,
+    email:      document.getElementById('email').value.trim(),
+    nickname:   document.getElementById('nickname').value.trim(),
+    name:       document.getElementById('name').value.trim(),
+    phone:      document.getElementById('phone').value.trim(),
+    combo:      getQty('combo'),
+    tart:       getQty('tart'),
+    canele:     getQty('canele'),
+    packaging:  packLabel,
+    rum:        getQty('rum'),
+    basque:     getQty('basque'),
+    total:      '$' + totalAmt.toLocaleString()
+  };
+
+  fetch('https://script.google.com/macros/s/AKfycby_6jeJJqwSGA4w_jDHttI2nbauG7e2IWy-0WRXmnF7-qz9YBfKeLeEqt5K9BZHf5fK/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  // 整理商品明細
+  let orderItems = '';
+  for(const [id, price] of Object.entries(prices)){
+    const qty = getQty(id);
+    if(qty > 0){
+      orderItems += `${names[id]} × ${qty} 盒　$${(qty*price).toLocaleString()}\n`;
+    }
+  }
+  if(packLabel) orderItems += `（可麗露包裝：${packLabel}）\n`;
+
+  // 發送確認信
+  emailjs.send('service_am4t6tg', 'template_nbd1l8a', {
+    to_email:    document.getElementById('email').value.trim(),
+    to_name:     document.getElementById('name').value.trim(),
+    name:        document.getElementById('name').value.trim(),
+    nickname:    document.getElementById('nickname').value.trim(),
+    phone:       document.getElementById('phone').value.trim(),
+    pickup_date: document.getElementById('pickupDate').value,
+    order_items: orderItems,
+    total:       '$' + totalAmt.toLocaleString(),
+  }).catch(err => console.log('Email 發送失敗:', err));
+
+  document.getElementById('formArea').style.display='none';
+  const s=document.getElementById('successScreen');
+  s.classList.add('show');
+  s.scrollIntoView({behavior:'smooth'});
+
+  // 彈窗提醒
+  setTimeout(()=>{ showModal(); }, 400);
+}
+</script>
+  <!-- 自訂彈窗 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <div class="modal-title">訂單已送出！請立刻私訊我們</div>
+      <div class="modal-warn">
+        <strong>60分鐘內</strong>未私訊告知姓名<br>訂單將<strong>自動取消不保留</strong>！
+      </div>
+      <div class="modal-links">
+        <a class="modal-link-btn" href="https://m.me/cheeseing2014" target="_blank" onclick="closeModal()">💬 立刻 FB 私訊我們</a>
+        <a class="modal-link-btn" href="https://lin.ee/9Z6dbCZ" target="_blank" onclick="closeModal()">📱 立刻 LINE 官方私訊</a>
+      </div>
+      <div style="font-size:11px;color:#bbb;margin-top:4px;">點擊上方按鈕即可關閉</div>
+    </div>
+  </div>
+
+<script>
+function onDateSelect(sel){
+  const locked = document.getElementById('lockedContent');
+  if(sel.value){
+    sel.classList.remove('unselected');
+    locked.classList.remove('content-locked');
+    locked.style.pointerEvents = '';
+    locked.onclick = null;
+    document.getElementById('scrollHint').classList.remove('show');
+  } else {
+    sel.classList.add('unselected');
+    locked.classList.add('content-locked');
+  }
+}
+
+let hintTimer;
+function showHint(){
+  const date = document.getElementById('pickupDate');
+  if(date.value) return;
+  const hint = document.getElementById('scrollHint');
+  hint.classList.add('show');
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(()=>hint.classList.remove('show'), 2500);
+  document.getElementById('pickupDate').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showModal(){ document.getElementById('modalOverlay').classList.add('show'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); }
+</script>
+</body>
+</html>
