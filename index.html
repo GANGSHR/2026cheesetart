@@ -80,14 +80,6 @@
   .subtotal { margin-left:auto; font-size:13px; color:var(--brown-mid); }
   .subtotal span { font-weight:700; color:var(--caramel); }
 
-  /* Packaging */
-  .pack-options { display:flex; gap:8px; flex-wrap:wrap; }
-  .pack-option { flex:1; min-width:100px; border:2px solid var(--sand); border-radius:10px; padding:10px 12px; cursor:pointer; transition:all 0.2s; background:#fff; text-align:center; }
-  .pack-option:hover { border-color:var(--brown-pale); }
-  .pack-option input { display:none; }
-  .pack-option.selected { border-color:var(--caramel); background:#FFF8F2; }
-  .pack-option-label { font-size:13px; font-weight:500; color:var(--brown-dark); display:block; margin-bottom:2px; }
-  .pack-option-note { font-size:11px; color:#999; line-height:1.4; }
 
 
   /* Form */
@@ -185,6 +177,28 @@
   .modal-close { font-size:12px; color:#aaa; cursor:pointer; text-decoration:underline; }
 
 
+  /* 送出前確認彈窗 */
+  .confirm-modal { max-width:420px; max-height:88vh; overflow-y:auto; }
+  .modal-list { text-align:left; font-size:13.5px; margin-bottom:14px; }
+  .modal-block { background:var(--sand-light); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+  .modal-section-title { font-weight:700; font-size:13px; color:var(--brown-dark); margin-bottom:8px; padding-bottom:6px; border-bottom:1.5px solid var(--caramel); }
+  .modal-row { display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px 14px; padding:5px 0; }
+  .modal-row .label { color:#777; flex:none; }
+  .modal-row .value { font-weight:700; text-align:right; word-break:break-word; flex:1; }
+  .modal-date-box { background:#EDD1D2; border-radius:10px; padding:12px 14px; text-align:center; }
+  .modal-date-box .date-label { font-size:12px; color:var(--brown-dark); font-weight:700; margin-bottom:4px; }
+  .modal-date-box .date-value { font-size:17px; font-weight:800; color:var(--brown-dark); }
+  .modal-total-block { background:var(--brown-dark); color:#fff; border-radius:12px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .modal-total-block .label { font-weight:700; font-size:15px; }
+  .modal-total-block .value { font-weight:800; font-size:20px; }
+  .modal-btns { display:flex; gap:10px; }
+  .btn-outline { flex:1; padding:13px; border-radius:10px; border:1.5px solid var(--sand); background:#fff; font-weight:700; font-size:14px; cursor:pointer; color:var(--brown-dark); font-family:'Noto Sans TC',sans-serif; }
+  .btn-solid { flex:1; padding:13px; border-radius:10px; border:none; background:var(--caramel); color:#fff; font-weight:700; font-size:14px; cursor:pointer; font-family:'Noto Sans TC',sans-serif; }
+  .btn-solid:disabled { opacity:.6; cursor:not-allowed; }
+  .deadline-note { color:var(--red-accent); font-weight:800; font-size:20px; margin-bottom:6px; animation:pulseDeadline 1.1s ease-in-out infinite; }
+  @keyframes pulseDeadline { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.055);opacity:.85;} }
+  .countdown-box { font-size:30px; font-weight:800; color:var(--brown-dark); font-variant-numeric:tabular-nums; letter-spacing:2px; margin-bottom:12px; }
+
   /* Checkbox confirm */
   .confirm-check-wrap {
     background: #FFF8F0;
@@ -232,9 +246,6 @@
     .product-body { padding:12px 14px; }
     .product-name { font-size:14px; }
     .product-price { font-size:15px; }
-    /* 包裝選項手機直排 */
-    .pack-options { flex-direction: column; }
-    .pack-option { min-width: unset; }
     /* 確認框文字不要太小 */
     .confirm-check-text { font-size:12px; }
     /* 送出按鈕更大更好按 */
@@ -274,16 +285,17 @@
       <div class="section-title">自取資訊</div>
       <div class="notice">
         📍 <strong>地址：</strong>高雄市三民區九如一路230巷18號1樓<br>
-        🕐 <strong>自取時段：</strong>週四五 17:30–18:00 ／ 週六日 15:30–16:00<br>
+        🕐 <strong>自取時段：</strong>週五 17:30–18:00 ／ 週六 15:30–16:00<br>
         <span class="warn">⚠ 不提早開放，也不延後關閉，請準時前往</span>
       </div>
       <div class="form-group">
         <label class="form-label">選擇自取日期<span class="req">*</span></label>
         <select class="pickup-select unselected" id="pickupDate" onchange="onDateSelect(this); applySoldOut(this.value);">
           <option value="">── 請選擇 ──</option>
-          <option value="4月24日（五）17:30–18:00">4月24日（五）17:30–18:00</option>
-          <option value="4月25日（六）15:30–16:00">4月25日（六）15:30–16:00</option>
-          <option value="5月2日（六）15:30–16:00">5月2日（六）15:30–16:00</option>
+          <option value="10月16日（五）17:30–18:00">10月16日（五）17:30–18:00</option>
+          <option value="10月17日（六）15:30–16:00">10月17日（六）15:30–16:00</option>
+          <option value="10月23日（五）17:30–18:00">10月23日（五）17:30–18:00</option>
+          <option value="10月24日（六）15:30–16:00">10月24日（六）15:30–16:00</option>
         </select>
       </div>
     </div>
@@ -376,7 +388,7 @@
         <div class="product-body">
           <div class="product-header">
             <div class="product-name">8入半熟乳酪塔</div>
-            <div class="product-price">$750</div>
+            <div class="product-price">$780</div>
           </div>
           <div class="product-desc">
             <span class="tag">半熟乳酪塔 ×8</span>
@@ -385,7 +397,7 @@
             <span class="qty-label">數量</span>
             <div class="qty-ctrl">
               <button class="qty-btn" onclick="changeQty('tart',-1)">−</button>
-              <input class="qty-input" type="number" id="qty-tart" value="0" min="0" max="10" oninput="updateAll('tart',750)">
+              <input class="qty-input" type="number" id="qty-tart" value="0" min="0" max="10" oninput="updateAll('tart',780)">
               <button class="qty-btn" onclick="changeQty('tart',1)">+</button>
             </div>
             <span class="subtotal">小計：<span id="sub-tart">$0</span></span>
@@ -393,70 +405,24 @@
         </div>
       </div>
 
-      <!-- 可麗露 -->
-      <div class="product-card" id="card-canele">
-        <div class="product-img-wrap">
-          <img src="https://gangshr.github.io/2026cheesetart/3.jpg" alt="原味可麗露" style="width:100%;height:auto;display:block;">
-        </div>
-        <div class="product-body">
-          <div class="product-header">
-            <div class="product-name">原味可麗露（6入）</div>
-            <div class="product-price">$500</div>
-          </div>
-          <div class="product-desc">
-            <span class="tag">可麗露 ×6</span><span class="tag">每人限購4盒</span><span class="tag">出貨當日現烤</span>
-          </div>
-          <div class="qty-row">
-            <span class="qty-label">數量</span>
-            <div class="qty-ctrl">
-              <button class="qty-btn" onclick="changeQty('canele',-1)">−</button>
-              <input class="qty-input" type="number" id="qty-canele" value="0" min="0" max="4" readonly style="cursor:not-allowed;background:#f9f9f9;">
-              <button class="qty-btn" onclick="changeQty('canele',1)">+</button>
-            </div>
-            <span class="subtotal">小計：<span id="sub-canele">$0</span></span>
-          </div>
-          <!-- 包裝選項（選了可麗露才顯示） -->
-          <div id="packSection" style="display:none; margin-top:14px; padding-top:14px; border-top:1.5px dashed var(--sand);">
-            <div style="font-size:13px; font-weight:500; color:var(--brown-mid); margin-bottom:8px;">📦 可麗露包裝方式</div>
-            <div class="pack-options">
-              <label class="pack-option" id="pack-allbag" onclick="selectPack('allbag')">
-                <input type="radio" name="pack" value="allbag">
-                <span class="pack-option-label">🛍 全部裝一袋</span>
-                <span class="pack-option-note">所有可麗露放一個大紙袋</span>
-              </label>
-              <label class="pack-option" id="pack-indbag" onclick="selectPack('indbag')">
-                <input type="radio" name="pack" value="indbag">
-                <span class="pack-option-label">🛍 個別袋裝</span>
-                <span class="pack-option-note">每組6入個別紙袋裝</span>
-              </label>
-              <label class="pack-option" id="pack-indbox" onclick="selectPack('indbox')">
-                <input type="radio" name="pack" value="indbox">
-                <span class="pack-option-label">📦 個別盒裝</span>
-                <span class="pack-option-note">每組6入個別紙盒裝</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- 蘭姆葡萄 -->
       <div class="product-card" id="card-rum">
         <div class="product-img-wrap">
-          <img src="https://gangshr.github.io/2026cheesetart/4.jpg" alt="蘭姆葡萄餅乾" style="width:100%;height:auto;display:block;">
+          <img src="https://gangshr.github.io/2026cheesetart/4.jpg" alt="12入蘭姆葡萄餅乾" style="width:100%;height:auto;display:block;">
         </div>
         <div class="product-body">
           <div class="product-header">
-            <div class="product-name">8入蘭姆葡萄餅乾</div>
-            <div class="product-price">$640</div>
+            <div class="product-name">12入蘭姆葡萄餅乾</div>
+            <div class="product-price">$880</div>
           </div>
           <div class="product-desc">
-            <span class="tag">蘭姆葡萄餅乾 ×8</span>
+            <span class="tag">蘭姆葡萄餅乾 ×12</span>
           </div>
           <div class="qty-row">
             <span class="qty-label">數量</span>
             <div class="qty-ctrl">
               <button class="qty-btn" onclick="changeQty('rum',-1)">−</button>
-              <input class="qty-input" type="number" id="qty-rum" value="0" min="0" max="10" oninput="updateAll('rum',640)">
+              <input class="qty-input" type="number" id="qty-rum" value="0" min="0" max="10" oninput="updateAll('rum',880)">
               <button class="qty-btn" onclick="changeQty('rum',1)">+</button>
             </div>
             <span class="subtotal">小計：<span id="sub-rum">$0</span></span>
@@ -513,6 +479,8 @@
         <label class="form-label">電子郵件<span class="req">*</span></label>
         <input class="form-input" id="email" type="email" placeholder="your@email.com" oninput="clearError('email')">
         <div class="field-error-msg" id="err-email">請填寫電子郵件</div>
+	<div class="form-hint">💡 請避免填寫 Yahoo 或 .edu 學校信箱，以免漏信或收不到系統自動通知喔！</div>
+
       </div>
       <div class="form-group">
         <label class="form-label">Facebook 或 LINE 暱稱<span class="req">*</span></label>
@@ -545,8 +513,6 @@
           <li><strong style="font-size:13px;color:var(--brown-dark);">生鮮食品不適用消費者保護法第十九條，不享有七天鑑賞期</strong></li>
           <li>與期待不符、不合口味、無依照保存方式保存、折封後未立即食用完畢等情事，不予退款</li>
           <li>產品有狀況請於<strong>收到當日反應</strong>，逾期不受理</li>
-          <li>退換貨僅限於商品本身瑕疵可歸咎於我方，不接受客人因個人因素申請退款或換貨，亦不接受客製化商品、已拆封、食用、失溫及保存不良之商品的退換貨申請，敬請見諒。</li>
-
         </ul>
       </div>
     </div>
@@ -559,10 +525,24 @@
         <strong>送出表單後，我會立刻在 60 分鐘內私訊苷舍告知訂購人中文姓名。</strong>
       </div>
     </div>
-    <div id="alertBox" class="alert" id="alertBox">請確認：①至少選擇一項商品 ②所有必填欄位已填寫 ③可麗露包裝方式已選擇（混搭請確認數量正確）④已勾選同意聲明。</div>
+    <div id="alertBox" class="alert" id="alertBox">請確認：①至少選擇一項商品 ②所有必填欄位已填寫 ③已勾選同意聲明。</div>
     <button class="submit-btn" onclick="submitForm()">確認送出訂單 →</button>
 
+    </div><!-- /lockedContent -->
+
   </div><!-- /formArea -->
+
+  <!-- 自取日期說明（送出後顯示，樣式同宅配表單） -->
+  <div class="section" id="pickupInfoBox" style="display:none;background:var(--sand-light);border-left:4px solid var(--caramel);border-radius:0 14px 14px 0;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;color:var(--brown-mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;">📅 自取日期說明</div>
+    <div style="font-size:13px;line-height:2;color:var(--brown-dark);">
+      <div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid var(--sand);">
+        <span style="color:var(--caramel);font-weight:700;" id="pickupInfoDate"></span><br>
+        <span style="font-size:12px;color:var(--red-accent);font-weight:500;">請準時前往自取，恕不更改日期</span><br>
+        <span style="font-size:12px;color:var(--brown-mid);">攜帶保冷袋＋保冷劑 🧊</span>
+      </div>
+    </div>
+  </div>
 
   <!-- ✅ 成功畫面（送出後才出現，包含私訊指引） -->
   <div class="success-screen" id="successScreen">
@@ -587,10 +567,6 @@
           <span style="color:#999;font-size:12px;">逾期未匯款視為棄單</span>
         </div>
       </div>
-      <div class="success-step">
-        <div class="success-step-num">4</div>
-        <div>攜帶保冷袋＋保冷劑，<strong>準時</strong>前往自取 🧊</div>
-      </div>
     </div>
     <div class="success-links">
       <a class="success-link-btn" href="https://m.me/cheeseing2014" target="_blank">💬 FB 私訊我們</a>
@@ -602,45 +578,22 @@
 
 <script>
 // ========================================================
-// 🔢 商家控制區：指定「日期 + 品項」的最大購買數量
-// 格式：'日期': { '品項id': 最大數量 }
-// 品項 id：combo / tart / canele / rum / basque
-// 不在這裡設定的品項，維持預設上限（可麗露4，其他10）
-// 範例：4/18 可麗露只剩1盒：
-//   '4月18日（五）17:30–18:00': { canele: 1 },
-// ========================================================
-const dateMaxQty = {
-  //'4月18日（六）15:30–16:00': { combo: 2 },   // 範例
-  '4月25日（六）15:30–16:00': { combo: 2 },   // 範例
-
-};
-// ========================================================
-
-// ========================================================
 // 🛒 商家控制區：指定「日期 + 品項」售完
 // 格式：'日期value': ['品項id', '品項id']
 // 日期 value 請對應上方 <option value="..."> 的內容
-// 品項 id：combo / tart / canele / rum / basque
-// 例如 5/1 可麗露售完：
-//   '5月1日（四）17:30–18:00': ['canele'],
+// 品項 id：combo / tart / rum / basque
+// 例如 10/16 蘭姆葡萄餅乾售完：
+//   '10月16日（五）17:30–18:00': ['rum'],
 // 多個品項售完：
-//   '4月16日（三）17:30–18:00': ['canele', 'rum'],
+//   '10月17日（六）15:30–16:00': ['tart', 'rum'],
 // ========================================================
-         // <option value="4月16日（四）17:30–18:00">4月16日（四）17:30–18:00</option>
-         // <option value="4月17日（五）17:30–18:00">4月17日（五）17:30–18:00</option>
-         // <option value="4月18日（六）15:30–16:00">4月18日（六）15:30–16:00</option>
-         //<option value="4月26日（日）15:30–16:00">4月26日（日）15:30–16:00</option>
-
-
 const dateSoldOut = {
-   '4月18日（六）15:30–16:00': ['canele'],  // 範例，取消 // 即生效
-   '4月16日（四）17:30–18:00': ['canele'],
-   '4月25日（六）15:30–16:00': ['canele'],
+  // '10月16日（五）17:30–18:00': ['rum'],  // 範例，取消 // 即生效
 };
 // ========================================================
 
-const prices = {combo:1050, tart:750, canele:500, rum:640, basque:690};
-const names  = {combo:'大綜合組', tart:'8入半熟乳酪塔', canele:'原味可麗露(6入)', rum:'8入蘭姆葡萄餅乾', basque:'6吋巴斯克乳酪蛋糕'};
+const prices = {combo:1050, tart:780, rum:880, basque:690};
+const names  = {combo:'大綜合組', tart:'8入半熟乳酪塔', rum:'12入蘭姆葡萄餅乾', basque:'6吋巴斯克乳酪蛋糕'};
 
 function getQty(id){ return parseInt(document.getElementById('qty-'+id).value)||0; }
 
@@ -658,7 +611,6 @@ function updateAll(id, price){
   document.getElementById('sub-'+id).textContent = '$'+(qty*price).toLocaleString();
   document.getElementById('card-'+id).classList.toggle('selected', qty>0);
   updateTotal();
-  checkPackSection();
 }
 
 function updateTotal(){
@@ -667,16 +619,9 @@ function updateTotal(){
     const qty=getQty(id);
     if(qty>0){
       total+=qty*price;
-      let extra = '';
-      if(id==='canele'){
-        const sel = document.querySelector('.pack-option.selected');
-        const packLabel = sel ? sel.querySelector('.pack-option-label').textContent.trim() : '⚠ 尚未選擇包裝';
-        extra = `<span style="font-size:11px;color:var(--brown-mid);margin-left:6px;">${packLabel}</span>`;
-      }
-      const maxQty = id==='canele' ? 4 : 10;
       rows.push(`
         <div class="total-row">
-          <span style="flex:1">${names[id]}${extra}</span>
+          <span style="flex:1">${names[id]}</span>
           <div style="display:flex;align-items:center;">
             <div class="total-qty-ctrl">
               <button class="total-qty-btn" onclick="totalChangeQty('${id}',-1)">−</button>
@@ -717,32 +662,6 @@ function totalChangeQty(id, delta){
   updateMsgTimer = setTimeout(()=>{ msg.style.display='none'; }, 1800);
 }
 
-function checkPackSection(){
-  const show = getQty('canele')>0;
-  const section = document.getElementById('packSection');
-  const wasHidden = section.style.display === 'none' || section.style.display === '';
-  section.style.display = show ? 'block' : 'none';
-  // 剛出現時自動滾過去
-  if(show && wasHidden){
-    setTimeout(()=>{
-      section.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 150);
-  }
-  // 取消選購時清空包裝選擇
-  if(!show){
-    ['allbag','indbag','indbox'].forEach(t=>{
-      const el = document.getElementById('pack-'+t);
-      if(el) el.classList.remove('selected');
-    });
-  }
-}
-
-function selectPack(t){
-  ['allbag','indbag','indbox'].forEach(x=>document.getElementById('pack-'+x).classList.remove('selected'));
-  document.getElementById('pack-'+t).classList.add('selected');
-  updateTotal();
-}
-
 function togglePolicy(){
   document.getElementById('policyBtn').classList.toggle('open');
   document.getElementById('policyBody').classList.toggle('open');
@@ -756,7 +675,7 @@ function toggleConfirm(){
 // 套用售完狀態（依目前選擇的日期）
 function applySoldOut(selectedDate){
   // 先清除所有售完狀態
-  ['combo','tart','canele','rum','basque'].forEach(id => {
+  ['combo','tart','rum','basque'].forEach(id => {
     const card = document.getElementById('card-'+id);
     if(!card) return;
     card.style.opacity = '';
@@ -784,35 +703,6 @@ function applySoldOut(selectedDate){
     card.style.opacity = '0.65';
     card.style.pointerEvents = 'none';
     card.appendChild(overlay);
-  });
-
-  // 套用每日每品項數量上限
-  const defaultMax = { combo:10, tart:10, canele:4, rum:10, basque:10 };
-  const dayMax = dateMaxQty[selectedDate] || {};
-  ['combo','tart','canele','rum','basque'].forEach(id => {
-    const input = document.getElementById('qty-'+id);
-    if(!input) return;
-    // 已售完的不處理
-    if(soldItems.includes(id)) return;
-    // 套用當日上限（優先）或預設上限
-    const max = (dayMax[id] !== undefined) ? dayMax[id] : defaultMax[id];
-    input.max = max;
-    // 若目前數量超過新上限，重設
-    if(parseInt(input.value) > max) {
-      input.value = max;
-      updateAll(id, prices[id]);
-    }
-    // 顯示剩餘數量提示
-    const card = document.getElementById('card-'+id);
-    const oldHint = card.querySelector('.stock-hint');
-    if(oldHint) oldHint.remove();
-    if(dayMax[id] !== undefined && dayMax[id] > 0){
-      const hint = document.createElement('div');
-      hint.className = 'stock-hint';
-      hint.style.cssText = 'font-size:11px;color:#A84040;font-weight:600;margin-top:6px;letter-spacing:1px;';
-      hint.textContent = `⚠ 本日限量 ${max} 盒`;
-      card.querySelector('.qty-row').after(hint);
-    }
   });
 }
 document.addEventListener('DOMContentLoaded', () => applySoldOut(''));
@@ -847,24 +737,21 @@ function clearError(fieldId){
 }
 
 function submitForm(){
-  const alertEl = document.getElementById('alertBox');
-  const confirmed = document.getElementById('confirmCheck').classList.contains('checked');
-  // 可麗露包裝驗證
-  const caneleQty = getQty('canele');
-  const needsPack = caneleQty > 0;
-  const packSelected = document.querySelector('.pack-option.selected');
-  if(needsPack && !packSelected){
-    document.getElementById('packSection').scrollIntoView({behavior:'smooth', block:'center'});
-    document.getElementById('packSection').style.outline = '2.5px solid var(--red-accent)';
-    document.getElementById('packSection').style.borderRadius = '12px';
-    setTimeout(()=>{ document.getElementById('packSection').style.outline=''; }, 2000);
+  // 至少一項商品
+  let totalAmt = 0;
+  for(const [id, price] of Object.entries(prices)) totalAmt += getQty(id) * price;
+  if(totalAmt === 0){
+    const a = document.getElementById('alertBox');
+    a.classList.add('show');
+    document.querySelector('.total-box').scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(()=>a.classList.remove('show'), 3500);
     return;
   }
 
-  if(!document.getElementById('email').value.trim()){ showError('email','err-email'); return; }
-  if(!document.getElementById('nickname').value.trim()){ showError('nickname','err-nickname'); return; }
-  if(!document.getElementById('name').value.trim()){ showError('name','err-name'); return; }
-  if(!document.getElementById('phone').value.trim()){ showError('phone','err-phone'); return; }
+  if(!document.getElementById('email').value.trim()){ showError('email'); return; }
+  if(!document.getElementById('nickname').value.trim()){ showError('nickname'); return; }
+  if(!document.getElementById('name').value.trim()){ showError('name'); return; }
+  if(!document.getElementById('phone').value.trim()){ showError('phone'); return; }
 
   if(!document.getElementById('confirmCheck').classList.contains('checked')){
     document.getElementById('confirmCheck').scrollIntoView({behavior:'smooth', block:'center'});
@@ -873,75 +760,164 @@ function submitForm(){
     return;
   }
 
-  // 收集包裝方式
-  const packEl = document.querySelector('.pack-option.selected');
-  const packLabel = packEl ? packEl.querySelector('.pack-option-label').textContent.trim() : '';
+  openConfirm();
+}
 
-  // 計算合計
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ===== 送出前二次確認彈窗 =====
+function openConfirm(){
+  const dateLabel = document.getElementById('pickupDate').value;
+  let total = 0;
+  let html = `
+    <div class="modal-block">
+      <div class="modal-section-title">📅 自取資訊</div>
+      <div class="modal-date-box">
+        <div class="date-label">自取日期</div>
+        <div class="date-value">${escapeHtml(dateLabel)}</div>
+      </div>
+    </div>
+    <div class="modal-block">
+      <div class="modal-section-title">🎁 訂購商品</div>`;
+  for(const [id, price] of Object.entries(prices)){
+    const qty = getQty(id);
+    if(qty > 0){
+      total += qty * price;
+      html += `<div class="modal-row"><span class="label">${names[id]} ×${qty}</span><span class="value">$${(qty*price).toLocaleString()}</span></div>`;
+    }
+  }
+  html += `</div>
+    <div class="modal-total-block"><span class="label">合計金額</span><span class="value">$${total.toLocaleString()}</span></div>
+    <div class="modal-block">
+      <div class="modal-section-title">🙋 訂購人資訊</div>
+      <div class="modal-row"><span class="label">姓名</span><span class="value">${escapeHtml(document.getElementById('name').value.trim())}</span></div>
+      <div class="modal-row"><span class="label">電話</span><span class="value">${escapeHtml(document.getElementById('phone').value.trim())}</span></div>
+      <div class="modal-row"><span class="label">Email</span><span class="value">${escapeHtml(document.getElementById('email').value.trim())}</span></div>
+      <div class="modal-row"><span class="label">FB/LINE暱稱</span><span class="value">${escapeHtml(document.getElementById('nickname').value.trim())}</span></div>
+    </div>`;
+  document.getElementById('confirmList').innerHTML = html;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+function closeConfirm(){ document.getElementById('confirmOverlay').classList.remove('show'); }
+
+// ===== 60 分鐘私訊倒數 =====
+let countdownTimer;
+function formatDeadline(deadline, now){
+  const isToday = deadline.getDate() === now.getDate() && deadline.getMonth() === now.getMonth();
+  const hh = String(deadline.getHours()).padStart(2,'0');
+  const mm = String(deadline.getMinutes()).padStart(2,'0');
+  return `請於${isToday ? '今日' : '明日'} ${hh}:${mm} 前私訊我們`;
+}
+function startCountdown(){
+  const now = new Date();
+  const deadline = new Date(now.getTime() + 60*60*1000);
+  document.getElementById('deadlineText').textContent = formatDeadline(deadline, now);
+  const el = document.getElementById('countdownText');
+  clearInterval(countdownTimer);
+  const tick = () => {
+    const left = deadline.getTime() - Date.now();
+    if(left <= 0){
+      clearInterval(countdownTimer);
+      el.textContent = '已逾時';
+      return;
+    }
+    const m = String(Math.floor(left/60000)).padStart(2,'0');
+    const sec = String(Math.floor(left%60000/1000)).padStart(2,'0');
+    el.textContent = `剩餘 ${m}:${sec}`;
+  };
+  tick();
+  countdownTimer = setInterval(tick, 1000);
+}
+
+// ===== 正式送出：寫入 Google 試算表 + 寄送確認信 =====
+async function finalSubmit(){
+  const btn = document.getElementById('finalSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '送出中...';
+
+  const dateLabel = document.getElementById('pickupDate').value;
   let totalAmt = 0;
   for(const [id, price] of Object.entries(prices)) totalAmt += getQty(id) * price;
 
-  // 送資料到 Google 試算表
   const payload = {
-    pickupDate: document.getElementById('pickupDate').value,
+    pickupDate: dateLabel,
     email:      document.getElementById('email').value.trim(),
     nickname:   document.getElementById('nickname').value.trim(),
     name:       document.getElementById('name').value.trim(),
     phone:      document.getElementById('phone').value.trim(),
     combo:      getQty('combo'),
     tart:       getQty('tart'),
-    canele:     getQty('canele'),
-    packaging:  packLabel,
     rum:        getQty('rum'),
     basque:     getQty('basque'),
     total:      '$' + totalAmt.toLocaleString()
   };
 
-  fetch('https://script.google.com/macros/s/AKfycby_6jeJJqwSGA4w_jDHttI2nbauG7e2IWy-0WRXmnF7-qz9YBfKeLeEqt5K9BZHf5fK/exec', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  // 整理商品明細
   let orderItems = '';
   for(const [id, price] of Object.entries(prices)){
     const qty = getQty(id);
-    if(qty > 0){
-      orderItems += `${names[id]} × ${qty} 盒　$${(qty*price).toLocaleString()}\n`;
-    }
+    if(qty > 0) orderItems += `${names[id]} × ${qty}　$${(qty*price).toLocaleString()}\n`;
   }
-  if(packLabel) orderItems += `（可麗露包裝：${packLabel}）\n`;
 
-  // 發送確認信
-  emailjs.send('service_am4t6tg', 'template_nbd1l8a', {
-    to_email:    document.getElementById('email').value.trim(),
-    to_name:     document.getElementById('name').value.trim(),
-    name:        document.getElementById('name').value.trim(),
-    nickname:    document.getElementById('nickname').value.trim(),
-    phone:       document.getElementById('phone').value.trim(),
-    pickup_date: document.getElementById('pickupDate').value,
-    order_items: orderItems,
-    total:       '$' + totalAmt.toLocaleString(),
-  }).catch(err => console.log('Email 發送失敗:', err));
+  try {
+    fetch('https://script.google.com/macros/s/AKfycby_6jeJJqwSGA4w_jDHttI2nbauG7e2IWy-0WRXmnF7-qz9YBfKeLeEqt5K9BZHf5fK/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
+    await emailjs.send('service_am4t6tg', 'template_nbd1l8a', {
+      to_email:    payload.email,
+      to_name:     payload.name,
+      name:        payload.name,
+      nickname:    payload.nickname,
+      phone:       payload.phone,
+      pickup_date: dateLabel,
+      order_items: orderItems,
+      total:       payload.total,
+    });
+  } catch(err) {
+    console.log('送出過程發生錯誤:', err);
+  }
+
+  closeConfirm();
   document.getElementById('formArea').style.display='none';
-  const s=document.getElementById('successScreen');
-  s.classList.add('show');
-  s.scrollIntoView({behavior:'smooth'});
-
-  // 彈窗提醒
-  setTimeout(()=>{ showModal(); }, 400);
+  document.getElementById('pickupInfoDate').textContent = '你的自取日期：' + dateLabel;
+  document.getElementById('pickupInfoBox').style.display = 'block';
+  const sc = document.getElementById('successScreen');
+  sc.classList.add('show');
+  document.getElementById('pickupInfoBox').scrollIntoView({behavior:'smooth'});
+  startCountdown();
+  showModal();
+  btn.disabled = false;
+  btn.textContent = '確認無誤，送出';
 }
 </script>
+  <!-- 送出前二次確認彈窗 -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal-box confirm-modal">
+      <div class="modal-title">請再次確認訂購內容</div>
+      <div class="modal-list" id="confirmList"></div>
+      <div style="font-size:12.5px;color:#888;margin-bottom:16px;line-height:1.7;">送出後將<b>不提供任意更改自取日期及訂購品項</b>，請確認無誤後再送出。</div>
+      <div class="modal-btns">
+        <button class="btn-outline" onclick="closeConfirm()">返回修改</button>
+        <button class="btn-solid" id="finalSubmitBtn" onclick="finalSubmit()">確認無誤，送出</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 自訂彈窗 -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
       <div class="modal-icon">⚠️</div>
       <div class="modal-title">訂單已送出！請立刻私訊我們</div>
+      <div class="deadline-note" id="deadlineText"></div>
+      <div class="countdown-box" id="countdownText"></div>
       <div class="modal-warn">
-        <strong>60分鐘內</strong>未私訊告知姓名<br>訂單將<strong>自動取消不保留</strong>！
+        <strong>60分鐘內</strong>未私訊告知姓名<br>訂單將<strong>自動取消不保留</strong>！<br>
+        <span style="font-size:12px;">請擇一處聯絡即可，切勿重複傳訊息</span>
       </div>
       <div class="modal-links">
         <a class="modal-link-btn" href="https://m.me/cheeseing2014" target="_blank" onclick="closeModal()">💬 立刻 FB 私訊我們</a>
